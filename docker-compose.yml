@@ -1,1 +1,43 @@
 name: "Expense tracker"
+
+services:
+
+  backend:
+    build: 
+      context: .
+      dockerfile: ./web/backend/Dockerfile
+    container_name: "expense-tracker-backend"
+    restart: always
+    ports:
+      - "${BACKEND_PORT}:8000"
+    volumes:
+      - ./web/backend:/expense_tracker/backend/fastapi
+    env_file:
+      - .env
+
+  db:
+    image: mysql:8.4.8
+    container_name: "expense-tracker-db"
+    restart: always
+    ports:
+      - "${MYSQL_PORT}:3306"
+    volumes:
+      - ./project-data/mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    env_file:
+      - .env
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.2.1
+    container_name: "expense-tracker-phpmyadmin"
+    restart: always
+    ports:
+      - "8080:80"
+    env_file:
+      - .env
+
+networks:
+  default:
+    driver: bridge
