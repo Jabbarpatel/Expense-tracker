@@ -1,7 +1,6 @@
 name: "Expense tracker"
 
 services:
-
   backend:
     build: 
       context: .

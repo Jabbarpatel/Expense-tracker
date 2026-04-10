@@ -1,3 +1,8 @@
-web/backend/extr-env
+extr-env
 .env
 project-data
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd

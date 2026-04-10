@@ -1,5 +1,5 @@
-from config.config import Base
-from sqlalchemy import Column, Integer, String, Text, TIMESTAMP
+from src.config.config import Base
+from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, func
 
 
 class Users(Base):
@@ -9,10 +9,9 @@ class Users(Base):
     name = Column(String(50), nullable=False)
     email = Column(String(100), unique=True, nullable=False)
     password = Column(Text)
-    created_at = Column(TIMESTAMP)
+    created_at = Column(TIMESTAMP, server_default=func.now())
 
-    def __init__(self, name: str, email: str, password: str, created_at):
+    def __init__(self, name: str, email: str, password: str):
         self.name = name
         self.email = email
         self.password = password
-        self.created_at = created_at
