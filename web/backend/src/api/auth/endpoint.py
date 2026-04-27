@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from src.services.auth_service import AuthService
-from src.api.auth.api_definations import SigninRequest
+from src.api.auth.api_definations import SigninRequest, SigninResponse
 from fastapi import Depends
 from src.config.config import get_db
 from sqlalchemy.orm import Session
@@ -14,17 +14,21 @@ def get_auth_service(db: Session = Depends(get_db)):
 
 @router.post("/login")
 def login():
-    # Implement login endpoint logic here
     return {"message": "Login successful"}
 
 
-@router.post("/signup")
+@router.post(
+    "/signup/{id}",
+    response_model=SigninResponse,
+    responses={409: {"description": "Failed to sigin"}},
+)
 def signup(
-    signin_request: SigninRequest, auth_service: AuthService = Depends(get_auth_service)
+    id: int,
+    signin_request: SigninRequest,
+    auth_service: AuthService = Depends(get_auth_service),
 ):
     name = signin_request.name
     email = signin_request.email
     password = signin_request.password
-    print(name, email, password)
     auth_service.signin(name, email, password)
     return "success"

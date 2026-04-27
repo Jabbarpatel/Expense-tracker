@@ -1,15 +1,19 @@
 from src.config.config import Base
-from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, func
+from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, func, orm
 
 
 class Users(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(50), nullable=False)
-    email = Column(String(100), unique=True, nullable=False)
-    password = Column(Text)
-    created_at = Column(TIMESTAMP, server_default=func.now())
+    id: orm.Mapped[int] = orm.mapped_column(
+        Integer, primary_key=True, autoincrement=True
+    )
+    name: orm.Mapped[str] = orm.mapped_column(String(50), nullable=False)
+    email: orm.Mapped[str] = orm.mapped_column(String(100), nullable=False)
+    password: orm.Mapped[str] = orm.mapped_column(Text)
+    created_at: orm.Mapped[str] = orm.mapped_column(
+        TIMESTAMP, server_default=func.now()
+    )
 
     def __init__(self, name: str, email: str, password: str):
         self.name = name

@@ -1,8 +1,5 @@
-from src.config.config import get_db
-from fastapi import Depends
 from sqlalchemy.orm import Session
 from src.models.users import Users
-from typing import Optional
 
 
 class UsersController:
