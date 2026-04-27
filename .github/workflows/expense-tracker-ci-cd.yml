@@ -45,4 +45,4 @@ jobs:
           context: .
           file: ./web/backend/Dockerfile
           push: true
-          tags: expense-tracker-backend:$${{ GITHUB_TAG_NAME }}
+          tags: expense-tracker-backend:${{ GITHUB_TAG_NAME }}
