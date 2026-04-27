@@ -1,5 +1,5 @@
 from src.config.config import Base
-from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, func, orm
+from sqlalchemy import Integer, String, Text, TIMESTAMP, func, orm
 
 
 class Users(Base):
