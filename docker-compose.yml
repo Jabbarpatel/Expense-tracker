@@ -1,6 +1,19 @@
 name: "Expense tracker"
 
 services:
+  frontend:
+    build:
+      context: .
+      dockerfile: ./web/frontend/dockerfile
+    container_name: "expense-tracker-frontend"
+    restart: always
+    ports:
+      - "3005:3005"
+    volumes:
+      - "./web/frontend:/expense_tracker/frontend/react"
+    env_file:
+      - .env
+
   backend:
     build: 
       context: .
