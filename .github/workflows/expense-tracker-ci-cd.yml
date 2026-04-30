@@ -56,10 +56,11 @@ jobs:
           cd web/backend
           ruff check .
 
-  build-docker-dev-image:
+  build-docker-frontend:
     runs-on: ubuntu-latest
     environment: Expense-Tracker
     if: startsWith(github.ref, 'refs/tags/')
+    needs: [frontend-test, backend-test]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -70,9 +71,33 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push Docker image
+      - name: Build and push frontend Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./web
+          context: ./web/frontend
+          file: ./web/frontend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/expense-tracker:${{ github.ref_name }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/expense-tracker-frontend:${{ github.ref_name }}
+
+    build-docker-backend:
+      runs-on: ubuntu-latest
+      environment: Expense-Tracker
+      if: startsWith(github.ref, 'refs/tags/')
+      needs: [frontend-test, backend-test]
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+
+        - name: Log in to Docker Hub
+          uses: docker/login-action@v3
+          with:
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
+
+        - name: Build and push backend Docker image
+          uses: docker/build-push-action@v5
+          with:
+            context: ./web/backend
+            file: ./web/backend/Dockerfile
+            push: true
+            tags: ${{ secrets.DOCKER_USERNAME }}/expense-tracker-backend:${{ github.ref_name }}
