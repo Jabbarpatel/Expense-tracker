@@ -58,6 +58,7 @@ jobs:
 
   build-docker-dev-image:
     runs-on: ubuntu-latest
+    environment: Expense-Tracker
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Checkout code
