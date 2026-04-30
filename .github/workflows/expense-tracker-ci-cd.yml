@@ -7,57 +7,58 @@ on:
     branches: ["**"]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "22"
+    frontend-test:
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+        - name: Set up Node.js
+          uses: actions/setup-node@v3
+          with:
+            node-version: "22"
+        - name: Install dependencies for frontend
+          run: |
+            cd web/frontend
+            yarn install
+        - name: Check lint errors for frontend
+          run: |
+            cd web/frontend
+            yarn lint
+        - name: Check typeScript errors for frontend
+          run: |
+            cd web/frontend
+            yarn tsc
 
-      - name: Install dependencies for frontend
-        run: |
-          cd web/frontend
-          yarn install
+    backend-test:
+      steps:
+        - name: Set up Python
+          uses: actions/setup-python@v4
+          with:
+            python-version: "3.12.3"
 
-      - name: Check lint errors for frontend
-        run: |
-          cd web/frontend
-          yarn lint
+        - name: Install dependencies for backend
+          run: |
+            cd web/backend
+            pip install -r requirements.txt
 
-      - name: Check typeScript errors for frontend
-        run: |
-          cd web/frontend
-          yarn tsc
+        - name: Errors check for backend
+          run: |
+            cd web/backend
+            ruff check .
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.12.3"
+    # build:
+    # - name: Log in to Docker Hub
+    #   uses: docker/login-action@v2
+    #   with:
+    #     username: ${{ secrets.DOCKER_USERNAME }}
+    #     password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Install dependencies for backend
-        run: |
-          cd web/backend
-          pip install -r requirements.txt
-
-      - name: Errors check for backend
-        run: |
-          cd web/backend
-          ruff check .
-
-      # - name: Log in to Docker Hub
-      #   uses: docker/login-action@v2
-      #   with:
-      #     username: ${{ secrets.DOCKER_USERNAME }}
-      #     password: ${{ secrets.DOCKER_PASSWORD }}
-
-      # - name: Build and push Docker images
-      #   uses: docker/build-push-action@v3
-      #   with:
-      #     context: .
-      #     file: ./web/backend/Dockerfile
-      #     push: true
-      #     tags: expense-tracker-backend:${{ secrets.GITHUB_TAG_NAME }}
+    # - name: Build and push Docker images
+    #   uses: docker/build-push-action@v3
+    #   with:
+    #     context: .
+    #     file: ./web/backend/Dockerfile
+    #     push: true
+    #     tags: expense-tracker-backend:${{ secrets.GITHUB_TAG_NAME }}
