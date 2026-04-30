@@ -2,30 +2,36 @@ name: "Expense tracker"
 
 services:
   frontend:
-    build:
-      context: .
-      dockerfile: ./web/frontend/dockerfile
+    image: ${DOCKER_USERNAME}/expense-tracker-frontend:${VERSION}
     container_name: "expense-tracker-frontend"
     restart: always
-    ports:
-      - "3005:3005"
+    expose:
+      - "${FRONTEND_PORT}"
     volumes:
       - "./web/frontend:/expense_tracker/frontend/react"
     env_file:
       - .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.services.frontend.loadbalancer.server.port=${FRONTEND_PORT}"
 
   backend:
-    build: 
-      context: .
-      dockerfile: ./web/backend/Dockerfile
+    image: ${DOCKER_USERNAME}/expense-tracker-backend:${VERSION}
     container_name: "expense-tracker-backend"
     restart: always
-    ports:
-      - "${BACKEND_PORT}:8000"
+    expose:
+      - "${BACKEND_PORT}"
     volumes:
       - ./web/backend:/expense_tracker/backend/fastapi
     env_file:
       - .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.backend.entrypoints=web"
+      - "traefik.http.services.backend.loadbalancer.server.port=${BACKEND_PORT}"
 
   db:
     image: mysql:8.4.8
@@ -46,9 +52,24 @@ services:
     container_name: "expense-tracker-phpmyadmin"
     restart: always
     ports:
-      - "8080:80"
+      - "8084:80"
     env_file:
       - .env
+
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik
+    command:
+     - "--api.insecure=true"
+     - "--providers.docker=true"
+     - "--providers.docker.exposedbydefault=false"
+     - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8086:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro" 
 
 networks:
   default:

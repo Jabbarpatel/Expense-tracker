@@ -19,5 +19,11 @@ app.add_middleware(
 app.include_router(auth_router, prefix="/api")
 app.include_router(users_router, prefix="/api")
 
+
+@app.get("/test")
+def test():
+    return "This is test"
+
+
 app.add_exception_handler(Exception, base_exception_handler)
 app.add_exception_handler(AppException, base_exception_handler)
