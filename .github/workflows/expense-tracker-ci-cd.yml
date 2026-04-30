@@ -74,7 +74,7 @@ jobs:
       - name: Build and push frontend Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./web/frontend
+          context: .
           file: ./web/frontend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/expense-tracker-frontend:${{ github.ref_name }}
@@ -95,7 +95,7 @@ jobs:
       - name: Build and push backend Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./web/backend
+          context: .
           file: ./web/backend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/expense-tracker-backend:${{ github.ref_name }}
