@@ -13,9 +13,9 @@ services:
       - .env
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`${DOMAIN}`)"
-      - "traefik.http.routers.frontend.entrypoints=web"
-      - "traefik.http.services.frontend.loadbalancer.server.port=${FRONTEND_PORT}"
+      - "traefik.http.routers.expense-frontend.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.expense-frontend.entrypoints=web"
+      - "traefik.http.services.expense-frontend.loadbalancer.server.port=${FRONTEND_PORT}"
 
   backend:
     image: ${DOCKER_USERNAME}/expense-tracker-backend:${VERSION}
@@ -29,9 +29,9 @@ services:
       - .env
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)"
-      - "traefik.http.routers.backend.entrypoints=web"
-      - "traefik.http.services.backend.loadbalancer.server.port=${BACKEND_PORT}"
+      - "traefik.http.routers.expense-backend.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.expense-backend.entrypoints=web"
+      - "traefik.http.services.expense-backend.loadbalancer.server.port=${BACKEND_PORT}"
 
   db:
     image: mysql:8.4.8
@@ -53,6 +53,17 @@ services:
     restart: always
     ports:
       - "8084:80"
+    env_file:
+      - .env
+
+  redis:
+    image: redis:7-alpine
+    container_name: "expense-tracker-redis"
+    restart: always
+    ports:
+      - "6380:${REDIS_PORT}"
+    volumes:
+      - "./project-data/redis:/data"
     env_file:
       - .env
 
