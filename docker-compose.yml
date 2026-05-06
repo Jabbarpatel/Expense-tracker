@@ -9,13 +9,13 @@ services:
       - "${FRONTEND_PORT}"
     volumes:
       - "./web/frontend:/expense_tracker/frontend/react"
-    env_file:
-      - .env
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.expense-frontend.rule=Host(`${DOMAIN}`)"
       - "traefik.http.routers.expense-frontend.entrypoints=web"
       - "traefik.http.services.expense-frontend.loadbalancer.server.port=${FRONTEND_PORT}"
+    env_file:
+      - .env
 
   backend:
     image: ${DOCKER_USERNAME}/expense-tracker-backend:${VERSION}
@@ -25,13 +25,13 @@ services:
       - "${BACKEND_PORT}"
     volumes:
       - ./web/backend:/expense_tracker/backend/fastapi
-    env_file:
-      - .env
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.expense-backend.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)"
       - "traefik.http.routers.expense-backend.entrypoints=web"
       - "traefik.http.services.expense-backend.loadbalancer.server.port=${BACKEND_PORT}"
+    env_file:
+      - .env
 
   db:
     image: mysql:8.4.8

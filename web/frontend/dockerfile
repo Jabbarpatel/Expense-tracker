@@ -8,6 +8,6 @@ RUN yarn install
 
 ADD ./web/frontend/ /expense_tracker/frontend/react/
 
-EXPOSE 3005
+EXPOSE 80
 
 CMD [ "yarn","dev" ]
