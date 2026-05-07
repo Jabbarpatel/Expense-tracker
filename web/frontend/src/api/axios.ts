@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const IS_DEV: boolean = true;
-const BACKEND_PORT: number = 8000;
+const BACKEND_PORT: number = 80;
 
 const API_URL: string = IS_DEV
   ? `${window.location.origin.replace(/:\d+?$/, "")}:${BACKEND_PORT}/api`

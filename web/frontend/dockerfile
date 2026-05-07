@@ -2,11 +2,11 @@ FROM node:24-alpine
 
 WORKDIR /expense_tracker/frontend/react
 
-ADD ./web/frontend/package.json /expense_tracker/frontend/react/
+COPY ./web/frontend/package.json /expense_tracker/frontend/react/
 
 RUN yarn install
 
-ADD ./web/frontend/ /expense_tracker/frontend/react/
+COPY ./web/frontend/ /expense_tracker/frontend/react/
 
 EXPOSE 3000
 

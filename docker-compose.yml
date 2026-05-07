@@ -6,9 +6,9 @@ services:
     container_name: expense-tracker-frontend
     restart: always
     expose:
-      - "${FRONTEND_PORT}"
+      - ${FRONTEND_PORT}
     volumes:
-      - "./web/frontend:/expense_tracker/frontend/react"
+      - ./web/frontend:/expense_tracker/frontend/react
     labels:
       - traefik.enable=true
       - traefik.http.routers.expense-frontend.rule=PathPrefix(`/`)
@@ -23,7 +23,7 @@ services:
     container_name: expense-tracker-backend
     restart: always
     expose:
-      - "${BACKEND_PORT}"
+      - ${BACKEND_PORT}
     volumes:
       - ./web/backend:/expense_tracker/backend/fastapi
     labels:
@@ -50,7 +50,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:5.2.1
-    container_name: "expense-tracker-phpmyadmin"
+    container_name: expense-tracker-phpmyadmin
     restart: always
     ports:
       - "8084:80"
@@ -59,12 +59,12 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: "expense-tracker-redis"
+    container_name: expense-tracker-redis
     restart: always
     ports:
-      - "6380:${REDIS_PORT}"
+      - 6380:${REDIS_PORT}
     volumes:
-      - "./project-data/redis:/data"
+      - ./project-data/redis:/data
     env_file:
       - .env
 
@@ -72,14 +72,14 @@ services:
     image: traefik:v3.0
     container_name: traefik
     command:
-     - "--api.insecure=true"
-     - "--providers.docker=true"
-     - "--providers.docker.exposedbydefault=false"
-     - "--entrypoints.web.address=:80"
+     - --api.insecure=true
+     - --providers.docker=true
+     - --providers.docker.exposedbydefault=false
+     - --entrypoints.web.address=:80
     ports:
-      - "80:80"
-      - "443:443"
-      - "8086:8080"
+      - 80:80
+      - 443:443
+      - 8086:8080
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro" 
 

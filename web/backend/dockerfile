@@ -2,11 +2,11 @@ FROM python:3.12-alpine
 
 WORKDIR /expense_tracker/backend/fastapi
 
-ADD ./web/backend/requirements.txt /expense_tracker/backend/fastapi/
+COPY ./web/backend/requirements.txt /expense_tracker/backend/fastapi/
 
 RUN pip install -r /expense_tracker/backend/fastapi/requirements.txt
 
-ADD ./web/backend/ /expense_tracker/backend/fastapi/
+COPY ./web/backend/ /expense_tracker/backend/fastapi/
 
 EXPOSE 8000
 

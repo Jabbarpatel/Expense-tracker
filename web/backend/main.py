@@ -20,7 +20,7 @@ app.include_router(auth_router, prefix="/api")
 app.include_router(users_router, prefix="/api")
 
 
-@app.get("/test")
+@app.get("/api/test")
 def test():
     return "This is test"
 
