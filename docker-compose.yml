@@ -3,33 +3,34 @@ name: "Expense tracker"
 services:
   frontend:
     image: ${DOCKER_USERNAME}/expense-tracker-frontend:${VERSION}
-    container_name: "expense-tracker-frontend"
+    container_name: expense-tracker-frontend
     restart: always
     expose:
       - "${FRONTEND_PORT}"
     volumes:
       - "./web/frontend:/expense_tracker/frontend/react"
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.expense-frontend.rule=Host(`${DOMAIN}`)"
-      - "traefik.http.routers.expense-frontend.entrypoints=web"
-      - "traefik.http.services.expense-frontend.loadbalancer.server.port=${FRONTEND_PORT}"
+      - traefik.enable=true
+      - traefik.http.routers.expense-frontend.rule=PathPrefix(`/`)
+      - traefik.http.routers.expense-frontend.entrypoints=web
+      - traefik.http.routers.expense-frontend.priority=1
+      - traefik.http.services.expense-frontend.loadbalancer.server.port=${FRONTEND_PORT}
     env_file:
       - .env
 
   backend:
     image: ${DOCKER_USERNAME}/expense-tracker-backend:${VERSION}
-    container_name: "expense-tracker-backend"
+    container_name: expense-tracker-backend
     restart: always
     expose:
       - "${BACKEND_PORT}"
     volumes:
       - ./web/backend:/expense_tracker/backend/fastapi
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.expense-backend.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)"
-      - "traefik.http.routers.expense-backend.entrypoints=web"
-      - "traefik.http.services.expense-backend.loadbalancer.server.port=${BACKEND_PORT}"
+      - traefik.enable=true
+      - traefik.http.routers.expense-backend.rule=PathPrefix(`/api`)
+      - traefik.http.routers.expense-backend.entrypoints=web
+      - traefik.http.services.expense-backend.loadbalancer.server.port=${BACKEND_PORT}
     env_file:
       - .env
 
